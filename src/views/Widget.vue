@@ -4,14 +4,16 @@
     <label for="widID">Widget ID</label>
     <input id="widID" v-model="widgetID"/>
     <button @click="toggleWidget()">Reload Widget</button>
+    <input type="range" v-model="widWidth" min="400" max="800"></input>
+    {{ widWidth }}
   </div>
   <hr/>
-  <div id="content-wrapper" style="display: flex; justify-content: center;">
-      <div :data-cswidget="widgetID"> 
-        <div class="spinner-container">
-          <div class="spinner"></div>
-        </div>
+  <div id="content-wrapper" :style="`justify-content: center; width: ${widWidth}px; margin-left: auto; margin-right: auto;`">
+    <div :data-cswidget="widgetID"> 
+      <div class="spinner-container">
+        <div class="spinner"></div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -76,6 +78,8 @@ import { ref } from 'vue';
 
 const widgetID = ref("7065");
 
+const widWidth = ref(500);
+
 </script>
 
 <script>
@@ -112,7 +116,7 @@ export default {
     },
     
     mountWidget() {
-    const useBeta = true;
+    const useBeta = import.meta.env.VITE_USE_BETA === 'true';
     window.cswidgetoverR = {
       portal: "//portalbeta.cityspark.com/",
       wportal: useBeta ? "https://pbeta.cityspark.com/" : "https://localhost:44133/"

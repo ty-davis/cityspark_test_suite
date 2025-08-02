@@ -8,6 +8,29 @@
     {{ widWidth }}
   </div>
   <hr/>
+  <div :style="{maxWidth: `${widWidth}px`, marginLeft: 'auto', marginRight: 'auto'}" style="margin-top: 1rem;">
+    A few widget IDs that show the Article widget:
+
+    <div>
+      <template v-for="wid in ['7065', '7066', '7067']">
+        <button class="button" style="margin-right: 0.5rem;" @click="gotoWidget(wid)"> {{ wid }} </button>
+      </template>
+    </div>
+  </div>
+
+  <div :style="{maxWidth: `${widWidth}px`, marginLeft: 'auto', marginRight: 'auto', marginTop: '1rem'}" v-if="widgetID == '7065'">
+
+    Here is an example site that I made that shows the use
+    of the widget. Widget 7065 shows the use of the "Bypass
+    date filter" option on the <a href="https://adminbeta.cityspark.com/Widget/Edit/7065" target="_blank">admin.cityspark.com</a>
+    page, which allows the user to select specific events
+    regardless of the date according to a label that exists on
+    those events (in this case the label is "articleot"). This particular
+    widget shows all of the events from the Ogden Twilight series of 
+    concerts.
+
+  </div>
+
   <div id="content-wrapper" :style="`justify-content: center; width: ${widWidth}px; margin-left: auto; margin-right: auto;`">
     <div :data-cswidget="widgetID"> 
       <div class="spinner-container">
@@ -32,7 +55,7 @@
   font-size: 1rem;
 }
 
-.wid-id-form button {
+button {
   padding: 9px 16px;
   border: none;
   background-color: #2c6fbb;
@@ -43,7 +66,7 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-.wid-id-form button:hover {
+button:hover {
   background-color: #245a99;
 }
 
@@ -74,74 +97,68 @@
 </style>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 const widgetID = ref("7065");
-
 const widWidth = ref(500);
+const scriptElement = ref(null);
 
-</script>
+function unmountWidget() {
+  // Remove the script element if it exists
+  if (scriptElement.value && scriptElement.value.parentNode) {
+    scriptElement.value.parentNode.removeChild(scriptElement.value);
+    scriptElement.value = null;
+  }
 
-<script>
-export default {
-  name: 'Widget',
-  data() {
-    return {
-      scriptElement: null
-    }
-  },
-  mounted() {
-    this.mountWidget()
-  },
-  beforeUnmount() {
-    this.unmountWidget()
-  },
-  methods: {
-    unmountWidget() {
-      // Remove the script element if it exists
-      if (this.scriptElement && this.scriptElement.parentNode) {
-        this.scriptElement.parentNode.removeChild(this.scriptElement)
-        this.scriptElement = null
-      }
-      
-      // Clear any widget content
-      const contentWrapper = document.getElementById('content-wrapper')
-      if (contentWrapper) {
-        // get the first div child and clear its contents
-        const widgetDiv = contentWrapper.querySelector('div[data-cswidget]')
-        if (widgetDiv) {
-          widgetDiv.innerHTML = ` <div class="spinner-container"> <div class="spinner"></div> </div>`;
-        }
-      }
-    },
-    
-    mountWidget() {
-    const useBeta = import.meta.env.VITE_USE_BETA === 'true';
-    window.cswidgetoverR = {
-      portal: "//portalbeta.cityspark.com/",
-      wportal: useBeta ? "https://pbeta.cityspark.com/" : "https://localhost:44133/"
-    };
-
-    const script = document.createElement('script');
-    script.src = "//cdn.cityspark.com/wid/get.js"
-    script.async = true;
-    script.defer = true;
-    
-    // Store reference to the script element
-    this.scriptElement = script;
-    
-    const wrap = document.getElementById("content-wrapper");
-    wrap.appendChild(script);
-    },
-    
-    toggleWidget() {
-      // Unmount then mount in order
-      this.unmountWidget()
-      // Small delay to ensure unmounting is complete
-      this.$nextTick(() => {
-        this.mountWidget()
-      })
+  // Clear any widget content
+  const contentWrapper = document.getElementById('content-wrapper');
+  if (contentWrapper) {
+    // get the first div child and clear its contents
+    const widgetDiv = contentWrapper.querySelector('div[data-cswidget]');
+    if (widgetDiv) {
+      widgetDiv.innerHTML = ` <div class="spinner-container"> <div class="spinner"></div> </div>`;
     }
   }
 }
+
+function mountWidget() {
+  const useBeta = import.meta.env.VITE_USE_BETA === 'true';
+  window.cswidgetoverR = {
+    portal: "//portalbeta.cityspark.com/",
+    wportal: useBeta ? "https://pbeta.cityspark.com/" : "https://localhost:44133/"
+  };
+
+  const script = document.createElement('script');
+  script.src = "//cdn.cityspark.com/wid/get.js";
+  script.async = true;
+  script.defer = true;
+
+  // Store reference to the script element
+  scriptElement.value = script;
+
+  const wrap = document.getElementById("content-wrapper");
+  wrap.appendChild(script);
+}
+
+function toggleWidget() {
+  // Unmount then mount in order
+  unmountWidget();
+  // Small delay to ensure unmounting is complete
+  nextTick(() => {
+    mountWidget();
+  });
+}
+
+function gotoWidget(wid) {
+  widgetID.value = wid;
+  toggleWidget();
+}
+
+onMounted(() => {
+  mountWidget();
+});
+
+onBeforeUnmount(() => {
+  unmountWidget();
+});
 </script>

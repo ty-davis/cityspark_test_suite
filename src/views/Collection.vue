@@ -14,9 +14,10 @@ export default {
     }
   },
   mounted() {
+    const useBeta = import.meta.env.VITE_USE_BETA === 'true';
     window.cswidgetoverR = {
       portal: "//portalbeta.cityspark.com/",
-      wportal: "https://localhost:44133/"
+      wportal: useBeta ? "https://pbeta.cityspark.com/" : "https://localhost:44133/"
     };
 
     const script = document.createElement('script');

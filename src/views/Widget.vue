@@ -1,11 +1,15 @@
 <template>
   <h2>Widget Example</h2>
   <div class="wid-id-form">
-    <label for="widID">Widget ID</label>
-    <input id="widID" v-model="widgetID"/>
-    <button @click="toggleWidget()">Reload Widget</button>
-    <input type="range" v-model="widWidth" min="250" max="1000"></input>
-    {{ widWidth }}
+    <div class="wid-id-form-row">
+      <label for="widID">Widget ID</label>
+      <input id="widID" v-model="widgetID"/>
+      <button @click="toggleWidget()">Reload Widget</button>
+    </div>
+    <div class="wid-id-form-row">
+      <input type="range" v-model="widWidth" min="250" max="1000"></input>
+      {{ widWidth }}px
+    </div>
   </div>
   <hr/>
   <div :style="{maxWidth: `${widWidth}px`, marginLeft: 'auto', marginRight: 'auto'}" style="margin-top: 1rem;">
@@ -31,10 +35,12 @@
 
   </div>
 
-  <div id="content-wrapper" :style="`justify-content: center; width: ${widWidth}px; margin-left: auto; margin-right: auto;`">
-    <div :data-cswidget="widgetID"> 
-      <div class="spinner-container">
-        <div class="spinner"></div>
+  <div id="content-stage" style="overflow-x: scroll; width: 100%;">
+    <div id="content-wrapper" :style="`justify-content: center; width: ${widWidth}px; margin-left: auto; margin-right: auto;`">
+      <div :data-cswidget="widgetID"> 
+        <div class="spinner-container">
+          <div class="spinner"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -43,16 +49,25 @@
 <style scoped>
 .wid-id-form {
   display: flex;
+  flex-flow: row wrap;
   gap: 10px;
   align-items: center;
   margin-bottom: 1rem;
 }
-
+.wid-id-form-row {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
 .wid-id-form input {
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  width: 60px;
+  max-width: 90%;
 }
 
 button {

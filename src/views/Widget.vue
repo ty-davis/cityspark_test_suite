@@ -4,7 +4,7 @@
     <label for="widID">Widget ID</label>
     <input id="widID" v-model="widgetID"/>
     <button @click="toggleWidget()">Reload Widget</button>
-    <input type="range" v-model="widWidth" min="400" max="800"></input>
+    <input type="range" v-model="widWidth" min="250" max="1000"></input>
     {{ widWidth }}
   </div>
   <hr/>

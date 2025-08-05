@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { texturedBackground } from '@/store'
-import HelloWorld from './components/HelloWorld.vue'
 
 const menuVisible = ref(false);
 </script>

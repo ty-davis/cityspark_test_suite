@@ -35,7 +35,7 @@
 
   </div>
 
-  <div id="content-stage" style="overflow-x: scroll; width: 100%;">
+  <div id="content-stage" style="overflow-x: scroll; width: 100%; margin-bottom: 100px;">
     <div id="content-wrapper" :style="`justify-content: center; width: ${widWidth}px; margin-left: auto; margin-right: auto;`">
       <div :data-cswidget="widgetID"> 
         <div class="spinner-container">
@@ -115,7 +115,7 @@ button:hover {
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 const widgetID = ref("7065");
-const widWidth = ref(500);
+const widWidth = ref(700);
 const scriptElement = ref(null);
 
 function unmountWidget() {
